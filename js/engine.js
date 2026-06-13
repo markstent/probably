@@ -97,16 +97,21 @@ function buildCurveSvg(dist, params) {
     el('path', { class: 'curve-path', filter: 'url(#chalk)', d: stroke }),
   );
 
-  // mean / mode markers
+  // mean / mode markers. Labels sit in the headroom above the plot (y < PAD_T)
+  // and split left/right so they never overlap the curve or each other.
   const stats = dist.stats(params);
-  const marker = (val, cls, label, color) => {
+  const marker = (val, label, color, side) => {
     if (!Number.isFinite(val) || val < c.lo || val > c.hi) return;
     const [px] = toPx(val, 0, c);
-    svg.append(el('line', { x1: px, y1: PAD_T, x2: px, y2: baseY, class: cls, stroke: color }));
-    svg.append(el('text', { x: px + 4, y: PAD_T + 12, class: 'annot', fill: color, text: label }));
+    svg.append(el('line', { x1: px, y1: PAD_T, x2: px, y2: baseY, class: 'mark-line', stroke: color }));
+    svg.append(el('text', {
+      x: side === 'left' ? px - 4 : px + 4, y: 13,
+      'text-anchor': side === 'left' ? 'end' : 'start',
+      class: 'annot', fill: color, text: label,
+    }));
   };
-  marker(stats.mode, 'mark-line', 'mode', 'rgba(240,235,224,0.4)');
-  marker(stats.mean, 'mark-line', 'mean', dist.color);
+  marker(stats.mode, 'mode', 'rgba(240,235,224,0.5)', 'left');
+  marker(stats.mean, 'mean', dist.color, 'right');
 
   return svg;
 }
