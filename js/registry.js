@@ -11,10 +11,12 @@ import { bernoulli } from './distributions/bernoulli.js';
 import { binomial } from './distributions/binomial.js';
 import { poisson } from './distributions/poisson.js';
 import { negativeBinomial } from './distributions/negative-binomial.js';
+import { dirichlet } from './distributions/dirichlet.js';
 
 export const DISTRIBUTIONS = [
   beta, gamma, inverseGamma, exponential, normal, studentT,
   bernoulli, binomial, poisson, negativeBinomial,
+  dirichlet,
 ];
 
 export const BY_ID = new Map(DISTRIBUTIONS.map((d) => [d.id, d]));

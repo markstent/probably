@@ -14,6 +14,7 @@ let current = null; // { dist, params }
 
 // ---------- formatting ----------
 function fmt(v) {
+  if (typeof v === 'string') return v;
   if (v === null || v === undefined || Number.isNaN(v)) return '—';
   if (!Number.isFinite(v)) return '∞';
   if (Math.abs(v) >= 1000 || (v !== 0 && Math.abs(v) < 0.001)) return v.toExponential(2);
@@ -21,7 +22,7 @@ function fmt(v) {
 }
 
 function el(tag, attrs = {}, ...children) {
-  const ns = tag === 'svg' || ['path', 'line', 'text', 'g', 'rect', 'polyline'].includes(tag);
+  const ns = tag === 'svg' || ['path', 'line', 'text', 'g', 'rect', 'polyline', 'circle', 'ellipse'].includes(tag);
   const node = ns
     ? document.createElementNS('http://www.w3.org/2000/svg', tag)
     : document.createElement(tag);
@@ -160,10 +161,59 @@ function buildBarsSvg(dist, params) {
   return svg;
 }
 
+// ---------- 2-simplex (Dirichlet) ----------
+function buildSimplexSvg(dist, params) {
+  const VBH = 210;
+  const V1 = [350, 18], V2 = [200, 188], V3 = [500, 188]; // apex (x₁), bottom-left (x₂), bottom-right (x₃)
+  const svg = el('svg', { viewBox: `0 0 ${VB_W} ${VBH}`, width: '100%', class: 'curve-svg' });
+  svg.append(el('path', { class: 'simplex-edge', filter: 'url(#chalk)',
+    d: `M${V1[0]},${V1[1]} L${V2[0]},${V2[1]} L${V3[0]},${V3[1]} Z` }));
+
+  const N = 46;
+  const pts = [];
+  let dmax = 0;
+  for (let i = 1; i < N; i++) {
+    for (let j = 1; j < N - i; j++) {
+      const x1 = i / N, x2 = j / N, x3 = 1 - x1 - x2;
+      if (x3 <= 0) continue;
+      const d = dist.density([x1, x2, x3], params);
+      if (Number.isFinite(d)) { pts.push([x1, x2, x3, d]); if (d > dmax) dmax = d; }
+    }
+  }
+  dmax = dmax || 1;
+
+  const group = el('g', { filter: 'url(#chalk)' });
+  for (const [x1, x2, x3, d] of pts) {
+    const o = Math.min(1, d / dmax);
+    if (o < 0.02) continue;
+    group.append(el('circle', {
+      cx: (x1 * V1[0] + x2 * V2[0] + x3 * V3[0]).toFixed(1),
+      cy: (x1 * V1[1] + x2 * V2[1] + x3 * V3[1]).toFixed(1),
+      r: 2.4, class: 'simplex-dot', fill: dist.color, 'fill-opacity': (0.1 + 0.85 * o).toFixed(3),
+    }));
+  }
+  svg.append(group);
+
+  const lab = (v, t, dx, dy, anchor) =>
+    svg.append(el('text', { x: v[0] + dx, y: v[1] + dy, 'text-anchor': anchor, class: 'annot', fill: 'rgba(240,235,224,0.42)', text: t }));
+  lab(V1, 'x₁', 0, -6, 'middle'); lab(V2, 'x₂', -6, 16, 'end'); lab(V3, 'x₃', 6, 16, 'start');
+
+  const m = dist.meanVector(params);
+  const mx = m[0] * V1[0] + m[1] * V2[0] + m[2] * V3[0];
+  const my = m[0] * V1[1] + m[1] * V2[1] + m[2] * V3[1];
+  svg.append(el('circle', { cx: mx.toFixed(1), cy: my.toFixed(1), r: 4, fill: 'none', stroke: dist.color, 'stroke-width': 1.5, class: 'simplex-mean' }));
+  svg.append(el('text', { x: mx + 7, y: my + 3, class: 'annot', fill: dist.color, text: 'mean' }));
+  return svg;
+}
+
 function redrawCurve(boardEl, dist, params) {
   const holder = boardEl.querySelector('.curve-holder');
-  holder.replaceChildren(dist.type === 'discrete' ? buildBarsSvg(dist, params) : buildCurveSvg(dist, params));
-  const kind = dist.type === 'discrete' ? 'probability mass' : 'probability density';
+  holder.replaceChildren(
+    dist.type === 'multivariate' ? buildSimplexSvg(dist, params)
+      : dist.type === 'discrete' ? buildBarsSvg(dist, params)
+        : buildCurveSvg(dist, params));
+  const kind = dist.type === 'multivariate' ? 'density over the simplex'
+    : dist.type === 'discrete' ? 'probability mass' : 'probability density';
   boardEl.querySelector('.curve-label').textContent = kind + ' · ' +
     dist.params.map((p) => `${p.label} = ${fmt(params[p.id])}`).join(',  ');
 }
@@ -172,15 +222,16 @@ function redrawCurve(boardEl, dist, params) {
 function redrawStats(boardEl, dist, params) {
   const s = dist.stats(params);
   const forms = dist.statForms || {};
+  const L = dist.statLabels || {};
   const cell = (lbl, val, form) =>
     el('div', { class: 'stat' },
       el('div', { class: 'stat-lbl', text: lbl }),
       el('div', { class: 'stat-val', text: form ? `${form} = ${val}` : val }));
   boardEl.querySelector('.stats').replaceChildren(
-    cell('Mean', fmt(s.mean), forms.mean),
-    cell('Mode', fmt(s.mode), forms.mode),
-    cell('Variance', fmt(s.variance), forms.variance),
-    cell('Support', s.support),
+    cell(L.mean || 'Mean', fmt(s.mean), forms.mean),
+    cell(L.mode || 'Mode', fmt(s.mode), forms.mode),
+    cell(L.variance || 'Variance', fmt(s.variance), forms.variance),
+    cell(L.support || 'Support', s.support),
   );
 }
 
