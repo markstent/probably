@@ -116,11 +116,55 @@ function buildCurveSvg(dist, params) {
   return svg;
 }
 
+// ---------- discrete bar chart ----------
+function buildBarsSvg(dist, params) {
+  const [kmin, kmax] = dist.xRange(params);
+  const n = kmax - kmin + 1;
+  const ks = [], ps = [];
+  let ymax = 0;
+  for (let k = kmin; k <= kmax; k++) {
+    const p = dist.pmf(k, params);
+    const v = Number.isFinite(p) ? p : 0;
+    ks.push(k); ps.push(v);
+    if (v > ymax) ymax = v;
+  }
+  ymax = ymax || 1;
+  const baseY = PAD_T + PLOT_H;
+  const slot = PLOT_W / n;
+  const barW = Math.max(2, Math.min(slot * 0.62, 44));
+  const svg = el('svg', { viewBox: `0 0 ${VB_W} ${VB_H}`, width: '100%', class: 'curve-svg' });
+
+  svg.append(
+    el('line', { x1: PAD_L, y1: PAD_T, x2: PAD_L, y2: baseY, class: 'axis' }),
+    el('line', { x1: PAD_L, y1: baseY, x2: VB_W - PAD_R, y2: baseY, class: 'axis' }),
+    el('text', { x: PAD_L - 8, y: PAD_T + 4, 'text-anchor': 'end', class: 'axis-label', text: 'P(k)' }),
+    el('text', { x: VB_W - PAD_R, y: baseY + 16, 'text-anchor': 'end', class: 'axis-label', text: 'k' }),
+  );
+
+  const tickEvery = n <= 15 ? 1 : Math.ceil(n / 12);
+  const group = el('g', { filter: 'url(#chalk)' });
+  for (let i = 0; i < n; i++) {
+    const cx = PAD_L + (i + 0.5) * slot;
+    const h = (ps[i] / ymax) * PLOT_H * 0.94;
+    group.append(el('rect', { x: cx - barW / 2, y: baseY - h, width: barW, height: h, class: 'bar', fill: dist.color, stroke: dist.color }));
+    if (i % tickEvery === 0) svg.append(el('text', { x: cx, y: baseY + 16, 'text-anchor': 'middle', class: 'axis-label', text: String(ks[i]) }));
+  }
+  svg.append(group);
+
+  const stats = dist.stats(params);
+  if (Number.isFinite(stats.mean) && stats.mean >= kmin && stats.mean <= kmax) {
+    const px = PAD_L + (stats.mean - kmin + 0.5) * slot;
+    svg.append(el('line', { x1: px, y1: PAD_T, x2: px, y2: baseY, class: 'mark-line', stroke: dist.color }));
+    svg.append(el('text', { x: px + 4, y: 13, 'text-anchor': 'start', class: 'annot', fill: dist.color, text: 'mean' }));
+  }
+  return svg;
+}
+
 function redrawCurve(boardEl, dist, params) {
   const holder = boardEl.querySelector('.curve-holder');
-  holder.replaceChildren(buildCurveSvg(dist, params));
-  const label = boardEl.querySelector('.curve-label');
-  label.textContent = 'probability density · ' +
+  holder.replaceChildren(dist.type === 'discrete' ? buildBarsSvg(dist, params) : buildCurveSvg(dist, params));
+  const kind = dist.type === 'discrete' ? 'probability mass' : 'probability density';
+  boardEl.querySelector('.curve-label').textContent = kind + ' · ' +
     dist.params.map((p) => `${p.label} = ${fmt(params[p.id])}`).join(',  ');
 }
 

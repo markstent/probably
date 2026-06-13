@@ -7,8 +7,9 @@ import { inverseGamma } from './distributions/inverse-gamma.js';
 import { exponential } from './distributions/exponential.js';
 import { normal } from './distributions/normal.js';
 import { studentT } from './distributions/student-t.js';
+import { bernoulli } from './distributions/bernoulli.js';
 
-export const DISTRIBUTIONS = [beta, gamma, inverseGamma, exponential, normal, studentT];
+export const DISTRIBUTIONS = [beta, gamma, inverseGamma, exponential, normal, studentT, bernoulli];
 
 export const BY_ID = new Map(DISTRIBUTIONS.map((d) => [d.id, d]));
 
