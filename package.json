@@ -1,0 +1,15 @@
+{
+  "name": "probably",
+  "version": "0.1.0",
+  "description": "An interactive chalkboard reference for statistical distributions and Bayesian inference.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test 'test/**/*.test.mjs'",
+    "test:smoke": "playwright test",
+    "serve": "python3 -m http.server 8000"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}

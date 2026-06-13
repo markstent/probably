@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup — Home screen</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+.frame{width:1100px;min-height:700px;background:#1d2b23;display:grid;grid-template-columns:220px 1fr;box-shadow:0 40px 80px rgba(0,0,0,0.6);position:relative;overflow:hidden;}
+.frame::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+.sidebar{border-right:1px solid rgba(245,240,232,0.09);padding:28px 18px;position:relative;z-index:1;display:flex;flex-direction:column;}
+.logo{font-family:'Playfair Display',serif;font-size:18px;color:#f0ebe0;line-height:1.2;font-weight:500;}
+.logo em{font-style:italic;color:#9ecf98;}
+.logo-sub{font-family:'Caveat',cursive;font-size:13px;color:rgba(240,235,224,0.32);letter-spacing:0.05em;margin-top:4px;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid rgba(245,240,232,0.1);}
+.search{display:flex;align-items:center;gap:8px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid rgba(245,240,232,0.08);}
+.search-placeholder{font-family:'Caveat',cursive;font-size:14px;color:rgba(240,235,224,0.25);letter-spacing:0.03em;}
+.search-underline{flex:1;height:1px;background:rgba(245,240,232,0.15);}
+.fl{font-family:'Caveat',cursive;font-size:11px;color:rgba(240,235,224,0.28);letter-spacing:0.12em;text-transform:uppercase;margin:14px 0 6px;padding-left:2px;}
+.dr{font-family:'Caveat',cursive;font-size:16px;color:rgba(240,235,224,0.45);padding:3px 8px;cursor:pointer;border-radius:3px;line-height:1.5;}
+.dr.on{color:#9ecf98;position:relative;}
+.dr.on::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:2px;height:16px;background:#9ecf98;border-radius:2px;}
+.main{padding:44px 56px;position:relative;z-index:1;}
+.h1{font-family:'Playfair Display',serif;font-size:52px;color:#f0ebe0;line-height:1.05;letter-spacing:-0.025em;margin-bottom:8px;}
+.h1 em{font-style:italic;color:#9ecf98;}
+.byline{font-family:'Caveat',cursive;font-size:20px;color:rgba(240,235,224,0.38);letter-spacing:0.02em;margin-bottom:36px;}
+.rule{height:1px;background:rgba(245,240,232,0.1);margin-bottom:32px;position:relative;}
+.rule::after{content:'';position:absolute;left:0;top:0;width:100px;height:1px;background:rgba(158,207,152,0.3);}
+.fgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;}
+.fb .fn{font-family:'Caveat',cursive;font-size:12px;color:rgba(240,235,224,0.3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.ch{font-family:'Caveat',cursive;font-size:16px;color:rgba(240,235,224,0.58);padding:2px 11px;border:1px solid rgba(245,240,232,0.16);border-radius:20px;cursor:pointer;}
+.ch:hover,.ch.hi{color:#9ecf98;border-color:rgba(158,207,152,0.35);}
+.ch.hi{color:#9ecf98;}
+.footer-note{font-family:'Caveat',cursive;font-size:15px;color:rgba(240,235,224,0.22);margin-top:32px;padding-top:18px;border-top:1px solid rgba(245,240,232,0.08);line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="sidebar">
+    <div class="logo">Statistical<br><em>Distributions</em></div>
+    <div class="logo-sub">Bayesian Reference</div>
+    <div class="search">
+      <div class="search-underline"></div>
+      <span class="search-placeholder">search...</span>
+    </div>
+    <div class="fl">Bounded</div>
+    <div class="dr">Beta</div>
+    <div class="dr">Kumaraswamy</div>
+    <div class="dr">Uniform</div>
+    <div class="dr">Triangular</div>
+    <div class="fl">Positive</div>
+    <div class="dr">Gamma</div>
+    <div class="dr">Inv-Gamma</div>
+    <div class="dr">Exponential</div>
+    <div class="dr">Log-Normal</div>
+    <div class="dr">Half-Normal</div>
+    <div class="dr">Weibull</div>
+    <div class="fl">Real line</div>
+    <div class="dr on">Normal</div>
+    <div class="dr">Student-t</div>
+    <div class="dr">Cauchy</div>
+    <div class="dr">Laplace</div>
+    <div class="fl">Discrete</div>
+    <div class="dr">Poisson</div>
+    <div class="dr">Binomial</div>
+    <div class="dr">Geometric</div>
+    <div class="fl">Multivariate</div>
+    <div class="dr">Dirichlet</div>
+    <div class="dr">Wishart</div>
+  </div>
+  <div class="main">
+    <div class="h1">Statistical<br><em>Distributions</em></div>
+    <div class="byline">a reference for bayesian practitioners</div>
+    <div class="rule"></div>
+    <div class="fgrid">
+      <div class="fb">
+        <div class="fn">Continuous — bounded</div>
+        <div class="chips">
+          <span class="ch hi">Beta</span>
+          <span class="ch">Kumaraswamy</span>
+          <span class="ch">Uniform</span>
+          <span class="ch">Triangular</span>
+          <span class="ch">PERT</span>
+        </div>
+      </div>
+      <div class="fb">
+        <div class="fn">Continuous — positive</div>
+        <div class="chips">
+          <span class="ch">Gamma</span>
+          <span class="ch">Inv-Gamma</span>
+          <span class="ch">Exponential</span>
+          <span class="ch">Log-Normal</span>
+          <span class="ch">Half-Normal</span>
+          <span class="ch">Weibull</span>
+          <span class="ch">Pareto</span>
+          <span class="ch">Chi-Squared</span>
+          <span class="ch">Rayleigh</span>
+        </div>
+      </div>
+      <div class="fb">
+        <div class="fn">Continuous — real line</div>
+        <div class="chips">
+          <span class="ch">Normal</span>
+          <span class="ch">Student-t</span>
+          <span class="ch">Cauchy</span>
+          <span class="ch">Laplace</span>
+          <span class="ch">Logistic</span>
+          <span class="ch">Gumbel</span>
+          <span class="ch">Asymmetric Laplace</span>
+        </div>
+      </div>
+      <div class="fb">
+        <div class="fn">Discrete</div>
+        <div class="chips">
+          <span class="ch">Bernoulli</span>
+          <span class="ch">Binomial</span>
+          <span class="ch">Poisson</span>
+          <span class="ch">Neg. Binomial</span>
+          <span class="ch">Geometric</span>
+          <span class="ch">Beta-Binomial</span>
+          <span class="ch">Hypergeometric</span>
+          <span class="ch">Zeta</span>
+        </div>
+      </div>
+      <div class="fb">
+        <div class="fn">Multivariate</div>
+        <div class="chips">
+          <span class="ch">Dirichlet</span>
+          <span class="ch">MVN</span>
+          <span class="ch">Wishart</span>
+          <span class="ch">Inv-Wishart</span>
+          <span class="ch">LKJ</span>
+          <span class="ch">Multinomial</span>
+          <span class="ch">Dir-Multinomial</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-note">select any distribution to see: notation / interactive curve / parameter controls / prior use / likelihood use / conjugate update / worked examples</div>
+  </div>
+</div>
+</body>
+</html>

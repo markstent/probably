@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup — Distribution detail</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#111;display:flex;align-items:flex-start;justify-content:center;min-height:100vh;padding:24px;}
+.frame{width:1100px;background:#1d2b23;display:grid;grid-template-columns:220px 1fr;box-shadow:0 40px 80px rgba(0,0,0,0.6);position:relative;overflow:hidden;}
+.frame::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+.sidebar{border-right:1px solid rgba(245,240,232,0.09);padding:28px 18px;position:relative;z-index:1;}
+.logo{font-family:'Playfair Display',serif;font-size:18px;color:#f0ebe0;line-height:1.2;font-weight:500;}
+.logo em{font-style:italic;color:#9ecf98;}
+.logo-sub{font-family:'Caveat',cursive;font-size:13px;color:rgba(240,235,224,0.32);letter-spacing:0.05em;margin-top:4px;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid rgba(245,240,232,0.1);}
+.fl{font-family:'Caveat',cursive;font-size:11px;color:rgba(240,235,224,0.28);letter-spacing:0.12em;text-transform:uppercase;margin:14px 0 6px;}
+.dr{font-family:'Caveat',cursive;font-size:16px;color:rgba(240,235,224,0.42);padding:3px 8px;line-height:1.5;}
+.dr.on{color:#9ecf98;position:relative;}
+.dr.on::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:2px;height:16px;background:#9ecf98;border-radius:2px;}
+.main{padding:40px 52px;position:relative;z-index:1;}
+
+/* Hero */
+.eyebrow{font-family:'Caveat',cursive;font-size:13px;color:rgba(240,235,224,0.32);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;}
+.dist-name{font-family:'Playfair Display',serif;font-size:46px;color:#f0ebe0;letter-spacing:-0.02em;line-height:1.0;margin-bottom:6px;}
+.dist-name em{font-style:italic;color:#9ecf98;}
+.notation{font-family:'JetBrains Mono',monospace;font-size:16px;color:rgba(158,207,152,0.8);margin-bottom:14px;}
+.tagline{font-family:'Caveat',cursive;font-size:18px;color:rgba(240,235,224,0.5);max-width:560px;line-height:1.55;margin-bottom:32px;}
+
+/* Curve area */
+.curve-zone{margin-bottom:28px;position:relative;}
+.curve-label{font-family:'Caveat',cursive;font-size:12px;color:rgba(240,235,224,0.25);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;}
+.curve-svg-wrap{border-top:1px solid rgba(245,240,232,0.1);border-bottom:1px solid rgba(245,240,232,0.1);padding:4px 0;position:relative;}
+.axis-label{font-family:'Caveat',cursive;font-size:13px;fill:rgba(240,235,224,0.3);}
+.curve-path{fill:none;stroke:#9ecf98;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.curve-fill{fill:rgba(158,207,152,0.08);}
+.mean-line{stroke:rgba(240,235,224,0.3);stroke-width:1;stroke-dasharray:4,4;}
+.annot{font-family:'Caveat',cursive;font-size:13px;fill:rgba(240,235,224,0.35);}
+
+/* Sliders */
+.sliders{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:28px;}
+.slider-group{}
+.slider-top{display:flex;justify-content:space-between;margin-bottom:6px;}
+.sl-name{font-family:'Caveat',cursive;font-size:15px;color:rgba(240,235,224,0.55);}
+.sl-val{font-family:'JetBrains Mono',monospace;font-size:13px;color:#9ecf98;}
+.slider-track{height:2px;background:rgba(245,240,232,0.12);border-radius:1px;position:relative;margin-bottom:4px;}
+.slider-fill{height:2px;background:rgba(158,207,152,0.5);border-radius:1px;}
+.slider-thumb{width:12px;height:12px;border-radius:50%;background:#9ecf98;border:2px solid #1d2b23;position:absolute;top:-5px;box-shadow:0 0 0 1px rgba(158,207,152,0.4);}
+.sl-desc{font-family:'Caveat',cursive;font-size:12px;color:rgba(240,235,224,0.25);line-height:1.4;}
+
+/* Stats strip */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;}
+.stat{border-top:1px solid rgba(245,240,232,0.12);padding-top:10px;}
+.stat-lbl{font-family:'Caveat',cursive;font-size:12px;color:rgba(240,235,224,0.28);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;}
+.stat-val{font-family:'JetBrains Mono',monospace;font-size:15px;color:#f0ebe0;}
+
+/* Two col prose */
+.prose-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;}
+.prose-block{}
+.prose-eyebrow{font-family:'Caveat',cursive;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;font-weight:700;}
+.prose-eyebrow.prior{color:rgba(100,160,240,0.7);}
+.prose-eyebrow.like{color:rgba(158,207,152,0.7);}
+.prose-title{font-family:'Playfair Display',serif;font-size:16px;color:#f0ebe0;margin-bottom:8px;font-weight:500;}
+.prose-body{font-family:'Caveat',cursive;font-size:15px;color:rgba(240,235,224,0.5);line-height:1.65;}
+.prose-tip{font-family:'Caveat',cursive;font-size:14px;color:rgba(240,235,224,0.35);padding:5px 0;border-bottom:1px solid rgba(245,240,232,0.07);display:flex;gap:8px;line-height:1.5;}
+.prose-tip::before{content:'›';color:rgba(158,207,152,0.5);flex-shrink:0;}
+
+/* Conjugate block */
+.conj{margin-bottom:28px;}
+.conj-eyebrow{font-family:'Caveat',cursive;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(200,180,240,0.6);margin-bottom:12px;font-weight:700;}
+.conj-flow{display:grid;grid-template-columns:1fr 24px 1fr 24px 1fr;gap:4px;align-items:center;margin-bottom:14px;}
+.cn{border:1px solid;border-radius:6px;padding:12px 14px;}
+.cn-prior{border-color:rgba(100,160,240,0.25);background:rgba(100,160,240,0.05);}
+.cn-like{border-color:rgba(158,207,152,0.25);background:rgba(158,207,152,0.05);}
+.cn-post{border-color:rgba(200,180,240,0.25);background:rgba(200,180,240,0.05);}
+.cn-lbl{font-family:'Caveat',cursive;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
+.cn-prior .cn-lbl{color:rgba(100,160,240,0.7);}
+.cn-like .cn-lbl{color:rgba(158,207,152,0.7);}
+.cn-post .cn-lbl{color:rgba(200,180,240,0.7);}
+.cn-dist{font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(240,235,224,0.75);}
+.cn-arrow{text-align:center;font-size:18px;color:rgba(240,235,224,0.2);}
+.formula-box{background:rgba(0,0,0,0.2);border:1px solid rgba(245,240,232,0.08);border-radius:6px;padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(240,235,224,0.5);line-height:2;white-space:pre;}
+.conj-note{font-family:'Caveat',cursive;font-size:14px;color:rgba(240,235,224,0.3);margin-top:8px;font-style:italic;}
+
+/* Examples */
+.ex-eyebrow{font-family:'Caveat',cursive;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(245,195,100,0.55);margin-bottom:10px;font-weight:700;}
+.ex-list{}
+.ex-item{font-family:'Caveat',cursive;font-size:15px;color:rgba(240,235,224,0.45);padding:8px 0;border-bottom:1px solid rgba(245,240,232,0.07);display:flex;gap:10px;line-height:1.55;}
+.ex-item::before{content:'→';color:rgba(245,195,100,0.4);flex-shrink:0;}
+
+/* Related */
+.rel-eyebrow{font-family:'Caveat',cursive;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,235,224,0.28);margin:20px 0 10px;font-weight:700;}
+.rel-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.rel-ch{font-family:'Caveat',cursive;font-size:15px;color:rgba(240,235,224,0.45);padding:2px 12px;border:1px solid rgba(245,240,232,0.14);border-radius:20px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="sidebar">
+    <div class="logo">Statistical<br><em>Distributions</em></div>
+    <div class="logo-sub">Bayesian Reference</div>
+    <div class="fl">Bounded</div>
+    <div class="dr">Beta</div>
+    <div class="dr">Kumaraswamy</div>
+    <div class="fl">Positive</div>
+    <div class="dr on">Gamma</div>
+    <div class="dr">Inverse-Gamma</div>
+    <div class="dr">Exponential</div>
+    <div class="dr">Log-Normal</div>
+    <div class="dr">Half-Normal</div>
+    <div class="dr">Weibull</div>
+    <div class="fl">Real line</div>
+    <div class="dr">Normal</div>
+    <div class="dr">Student-t</div>
+    <div class="dr">Cauchy</div>
+    <div class="dr">Laplace</div>
+    <div class="fl">Discrete</div>
+    <div class="dr">Poisson</div>
+    <div class="dr">Binomial</div>
+    <div class="fl">Multivariate</div>
+    <div class="dr">Dirichlet</div>
+    <div class="dr">Wishart</div>
+  </div>
+  <div class="main">
+    <div class="eyebrow">Continuous — positive</div>
+    <div class="dist-name"><em>Gamma</em> distribution</div>
+    <div class="notation">X ~ Gamma(α, β)</div>
+    <div class="tagline">The standard prior for rates and precisions. If your parameter must be positive and represents how fast something happens, Gamma is the natural choice.</div>
+
+    <!-- Curve -->
+    <div class="curve-zone">
+      <div class="curve-label">Probability density  &nbsp;·&nbsp;  α = 3.0,  β = 1.0</div>
+      <div class="curve-svg-wrap">
+        <svg viewBox="0 0 700 160" xmlns="http://www.w3.org/2000/svg" width="100%">
+          <defs>
+            <filter id="chalk" x="-5%" y="-5%" width="110%" height="110%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" result="noise"/>
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+          </defs>
+          <!-- grid lines -->
+          <line x1="50" y1="20" x2="50" y2="140" stroke="rgba(245,240,232,0.08)" stroke-width="1"/>
+          <line x1="50" y1="140" x2="660" y2="140" stroke="rgba(245,240,232,0.08)" stroke-width="1"/>
+          <line x1="50" y1="20" x2="660" y2="20" stroke="rgba(245,240,232,0.05)" stroke-width="0.5" stroke-dasharray="3,5"/>
+          <line x1="50" y1="80" x2="660" y2="80" stroke="rgba(245,240,232,0.05)" stroke-width="0.5" stroke-dasharray="3,5"/>
+          <!-- axis labels -->
+          <text x="355" y="158" text-anchor="middle" class="axis-label">x</text>
+          <text x="38" y="25" text-anchor="end" class="axis-label">p(x)</text>
+          <!-- filled area under curve -->
+          <path class="curve-fill" d="M60,138 C80,138 100,130 120,105 C145,75 165,32 200,22 C230,13 255,22 285,45 C315,68 340,95 370,112 C400,128 430,136 500,138 C560,139 620,139 650,139 L650,140 L60,140 Z"/>
+          <!-- chalk curve -->
+          <path class="curve-path" filter="url(#chalk)" d="M60,138 C80,138 100,130 120,105 C145,75 165,32 200,22 C230,13 255,22 285,45 C315,68 340,95 370,112 C400,128 430,136 500,138 C560,139 620,139 650,139"/>
+          <!-- mean marker -->
+          <line x1="200" y1="22" x2="200" y2="140" class="mean-line"/>
+          <text x="204" y="35" class="annot">mode</text>
+          <line x1="240" y1="50" x2="240" y2="140" stroke="rgba(245,195,100,0.3)" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="244" y="48" class="annot" fill="rgba(245,195,100,0.5)">mean = α/β</text>
+          <!-- x axis ticks -->
+          <text x="60" y="154" text-anchor="middle" class="axis-label">0</text>
+          <text x="180" y="154" text-anchor="middle" class="axis-label">2</text>
+          <text x="300" y="154" text-anchor="middle" class="axis-label">4</text>
+          <text x="420" y="154" text-anchor="middle" class="axis-label">6</text>
+          <text x="540" y="154" text-anchor="middle" class="axis-label">8</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="sliders">
+      <div class="slider-group">
+        <div class="slider-top"><span class="sl-name">α  shape</span><span class="sl-val">3.0</span></div>
+        <div class="slider-track"><div class="slider-fill" style="width:28%"></div><div class="slider-thumb" style="left:calc(28% - 6px)"></div></div>
+        <div class="sl-desc">α = 1 gives Exponential. Larger α gives a bell-shaped curve.</div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="sl-name">β  rate</span><span class="sl-val">1.0</span></div>
+        <div class="slider-track"><div class="slider-fill" style="width:20%"></div><div class="slider-thumb" style="left:calc(20% - 6px)"></div></div>
+        <div class="sl-desc">Rate (inverse scale). Higher β shifts distribution left.</div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-top"><span class="sl-name">&nbsp;</span></div>
+      </div>
+    </div>
+
+    <!-- Stats strip -->
+    <div class="stats">
+      <div class="stat"><div class="stat-lbl">Mean</div><div class="stat-val">α / β = 3.000</div></div>
+      <div class="stat"><div class="stat-lbl">Mode</div><div class="stat-val">(α − 1) / β = 2.000</div></div>
+      <div class="stat"><div class="stat-lbl">Variance</div><div class="stat-val">α / β² = 3.000</div></div>
+      <div class="stat"><div class="stat-lbl">Support</div><div class="stat-val">(0, ∞)</div></div>
+    </div>
+
+    <!-- Prose -->
+    <div class="prose-grid">
+      <div class="prose-block">
+        <div class="prose-eyebrow prior">As a prior</div>
+        <div class="prose-title">Prior on rates and precisions</div>
+        <div class="prose-body">Gamma is the conjugate prior for the rate parameter of Poisson and Exponential likelihoods, and for the precision (1/σ²) of a Normal. Use it when your parameter is strictly positive and represents a rate or inverse-variance. The parametrisation matters: some software uses shape and scale (θ = 1/β); always check which convention your tools use.</div>
+        <div style="margin-top:10px;">
+          <div class="prose-tip">Gamma(ε, ε) for small ε can cause pathological behaviour — prefer half-Normal on σ instead.</div>
+          <div class="prose-tip">Gamma(α, α) with large α concentrates around 1, useful for a rate you expect near 1.</div>
+          <div class="prose-tip">Exponential(λ) is Gamma(1, λ) — the memoryless special case.</div>
+        </div>
+      </div>
+      <div class="prose-block">
+        <div class="prose-eyebrow like">As a likelihood</div>
+        <div class="prose-title">Likelihood for positive continuous data</div>
+        <div class="prose-body">Gamma is a flexible likelihood for strictly positive, right-skewed continuous data: rainfall amounts, hospital stay durations, insurance claim sizes, response times. Its shape parameter controls skewness — small α gives high right-skew, large α approaches symmetric. The Exponential (α = 1) is the memoryless special case.</div>
+        <div style="margin-top:10px;">
+          <div class="prose-tip">Compare to Log-Normal: both model right-skewed positives but Log-Normal has a heavier right tail.</div>
+          <div class="prose-tip">If data has a point mass at zero, consider a zero-inflated model with a Gamma component.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conjugate -->
+    <div class="conj">
+      <div class="conj-eyebrow">Conjugate update</div>
+      <div class="conj-flow">
+        <div class="cn cn-prior">
+          <div class="cn-lbl">Prior</div>
+          <div class="cn-dist">Gamma(α, β)</div>
+        </div>
+        <div class="cn-arrow">×</div>
+        <div class="cn cn-like">
+          <div class="cn-lbl">Likelihood</div>
+          <div class="cn-dist">Poisson(λ)</div>
+        </div>
+        <div class="cn-arrow">∝</div>
+        <div class="cn cn-post">
+          <div class="cn-lbl">Posterior</div>
+          <div class="cn-dist">Gamma(α + Σxᵢ, β + n)</div>
+        </div>
+      </div>
+      <div class="formula-box">Prior:       λ ~ Gamma(α, β)
+Likelihood:  xᵢ ~ Poisson(λ),  i = 1…n
+
+Posterior:   λ | x ~ Gamma(α + Σxᵢ,  β + n)
+
+Posterior mean = (α + Σxᵢ) / (β + n)
+  → weighted average of prior mean α/β and MLE Σxᵢ/n</div>
+      <div class="conj-note">For Exponential likelihood: Gamma(α + n, β + Σxᵢ) — the roles of n and Σxᵢ swap.</div>
+    </div>
+
+    <!-- Examples -->
+    <div class="ex-eyebrow">Worked examples</div>
+    <div class="ex-list">
+      <div class="ex-item">Event rate in a Poisson process (e.g. server requests per second): Gamma(2, 0.1) prior on λ, updated as request counts accumulate.</div>
+      <div class="ex-item">Precision (1/σ²) in a Normal model: Gamma prior gives Normal-Gamma joint conjugacy, the foundation of conjugate Bayesian linear regression.</div>
+      <div class="ex-item">Insurance claim frequency: λ ~ Gamma(3, 1) prior updated as claims arrive, posterior gives credibility-weighted rate estimate.</div>
+      <div class="ex-item">Waiting time modelling: Gamma(2, 1) encodes "at least one thing must happen before the event" — the Erlang special case.</div>
+    </div>
+
+    <div class="rel-eyebrow">Related distributions</div>
+    <div class="rel-chips">
+      <span class="rel-ch">Exponential</span>
+      <span class="rel-ch">Inverse-Gamma</span>
+      <span class="rel-ch">Poisson</span>
+      <span class="rel-ch">Weibull</span>
+      <span class="rel-ch">Log-Normal</span>
+      <span class="rel-ch">Chi-Squared</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>
