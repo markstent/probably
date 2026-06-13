@@ -6,9 +6,14 @@ import assert from 'node:assert/strict';
 //   - the numerical mean and variance match the closed-form stats()
 // Used by every continuous distribution's test so formula errors surface
 // mechanically. Pass well-behaved params (bounded, finite-moment) for the check.
+// opts.range overrides the integration window (plot xRange crops tails that
+// variance is sensitive to). opts.checkVariance:false skips the variance check
+// for power-law-tailed distributions where numeric variance converges too slowly
+// to integrate cheaply; their variance formula is covered by the closed-form
+// stats spot-check instead.
 export function checkContinuous(dist, params, opts = {}) {
-  const { n = 200000, tolNorm = 2e-3, tolMoment = 5e-3 } = opts;
-  const [lo, hi] = dist.xRange(params);
+  const { n = 200000, tolNorm = 2e-3, tolMoment = 5e-3, checkVariance = true } = opts;
+  const [lo, hi] = opts.range || dist.xRange(params);
   const h = (hi - lo) / n;
 
   // Composite Simpson's rule for ∫ f over [lo, hi].
@@ -31,8 +36,10 @@ export function checkContinuous(dist, params, opts = {}) {
     Math.abs(mean - stats.mean) < tolMoment * (1 + Math.abs(stats.mean)),
     `${dist.name}: numeric mean ${mean} != stats.mean ${stats.mean}`
   );
-  assert.ok(
-    Math.abs(variance - stats.variance) < tolMoment * (1 + Math.abs(stats.variance)),
-    `${dist.name}: numeric variance ${variance} != stats.variance ${stats.variance}`
-  );
+  if (checkVariance) {
+    assert.ok(
+      Math.abs(variance - stats.variance) < tolMoment * (1 + Math.abs(stats.variance)),
+      `${dist.name}: numeric variance ${variance} != stats.variance ${stats.variance}`
+    );
+  }
 }

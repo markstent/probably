@@ -2,8 +2,13 @@
 // import plus an entry here; the sidebar, home grid, routing, and related-chip
 // filtering all derive from this list. Only distributions listed here are shown.
 import { beta } from './distributions/beta.js';
+import { gamma } from './distributions/gamma.js';
+import { inverseGamma } from './distributions/inverse-gamma.js';
+import { exponential } from './distributions/exponential.js';
+import { normal } from './distributions/normal.js';
+import { studentT } from './distributions/student-t.js';
 
-export const DISTRIBUTIONS = [beta];
+export const DISTRIBUTIONS = [beta, gamma, inverseGamma, exponential, normal, studentT];
 
 export const BY_ID = new Map(DISTRIBUTIONS.map((d) => [d.id, d]));
 
