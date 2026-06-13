@@ -1,68 +1,87 @@
+<div align="center">
+
 # Probably
 
-*a bayesian reference*
+*an interactive chalkboard reference for probability distributions and Bayesian inference*
 
-An interactive chalkboard reference for statistical distributions and Bayesian inference. Each distribution gets one scrolling board: its notation, a live density curve you reshape with parameter sliders, a stats strip, honest guidance on using it as a prior and as a likelihood, the conjugate update written out in full, and worked examples. It runs entirely in the browser with no build step and deploys as static files to GitHub Pages.
+[![Visit the site](https://img.shields.io/badge/visit-markstent.github.io%2Fprobably-9ecf98?style=for-the-badge)](https://markstent.github.io/probably/)
 
-## Running locally
+[![Pages build](https://img.shields.io/github/deployments/markstent/probably/github-pages?label=pages%20build)](https://markstent.github.io/probably/)
+![Distributions](https://img.shields.io/badge/distributions-11-f5c87a)
+![No build step](https://img.shields.io/badge/build-none-8ab4d4)
+![Vanilla JS](https://img.shields.io/badge/javascript-vanilla-c3b0e8)
+![Last commit](https://img.shields.io/github/last-commit/markstent/probably)
 
-The app uses native ES modules, which browsers refuse to load over `file://`. Serve the folder over HTTP instead:
+### → [**markstent.github.io/probably**](https://markstent.github.io/probably/) ←
+
+![Probably — the Gamma distribution board](docs/preview.png)
+
+</div>
+
+## What is this?
+
+**Probably** is a free, interactive reference for the probability distributions that turn up in Bayesian statistics. Pick a distribution and you get one clean board that answers the questions you actually have: what is this distribution, what does it look like, when would I use it, and how does it update when I see data.
+
+It is designed for students, data scientists, and anyone building Bayesian models who wants to build intuition rather than dig through scattered textbook pages and inconsistent notation. No sign-up, no installation, nothing to download. Just open the link.
+
+## What you get for each distribution
+
+- **Notation and a plain-language tagline** so you know immediately what it is for.
+- **An interactive curve.** Drag the parameter sliders and watch the density redraw live, so you can feel how each parameter changes the shape. Discrete distributions are drawn as bar charts; the Dirichlet is drawn on its simplex.
+- **Live summary statistics** — mean, mode, variance, and support — updating as you move the sliders.
+- **"As a prior" and "as a likelihood" guidance** in point form: when to reach for it, what the parameters mean in practice, how to choose them, and the common pitfalls. Where a distribution is not really used in one of those roles, it says so honestly and tells you what to use instead.
+- **The conjugate update written out in full** — prior × likelihood → posterior — with the equations and a plain-English explanation of what the update is doing. Where there is no tidy update, it explains which sampler to use and why.
+- **Concrete worked examples** with real domains and numbers.
+- **Links to related distributions** so you can explore the family.
+
+## Distributions covered
+
+| Family | Distributions |
+| --- | --- |
+| Continuous — bounded | Beta |
+| Continuous — positive | Gamma, Inverse-Gamma, Exponential |
+| Continuous — real line | Normal, Student-t |
+| Discrete | Bernoulli, Binomial, Poisson, Negative Binomial |
+| Multivariate | Dirichlet |
+
+More distributions are on the way; the site is built so each new one slots straight in.
+
+## Getting around
+
+- **Search** the sidebar to filter the list, and press **Enter** to jump to the first match.
+- **↑ / ↓ arrow keys** move between distributions.
+- **Esc** or clicking the **Probably** logo returns you home.
+- Every page has its own link (for example [`#gamma`](https://markstent.github.io/probably/#gamma)), so you can bookmark or share a specific distribution.
+- It works on phones and tablets as well as desktop.
+
+## Good to know
+
+- Everything runs in your browser. No data is collected, no cookies are set, and nothing is sent anywhere.
+- The mathematics (densities, summary statistics, and conjugate updates) is computed in the browser and is covered by an automated test suite that checks each density integrates to one and that its stated mean and variance are correct.
+
+---
+
+<details>
+<summary><b>For developers and contributors</b></summary>
+
+Probably is a static site: plain HTML, CSS, and vanilla JavaScript with no build step. Each distribution is one self-contained ES module in `js/distributions/`.
+
+**Run it locally** (native ES modules need HTTP, so opening the file directly will not work):
 
 ```bash
-python3 -m http.server 8000
-# then open http://127.0.0.1:8000
+python3 -m http.server 8000   # then open http://127.0.0.1:8000
 ```
 
-Any static server works (`npx serve`, etc.). Opening `index.html` directly will not work.
-
-## Deploying to GitHub Pages
-
-1. Push to the `main` branch.
-2. In the repository settings, enable Pages and serve from the `main` branch at the repository root.
-
-A `.nojekyll` file is included so Pages serves every file as-is. All paths are relative, so the site works from the project subpath (for example `username.github.io/probably/`). Routing is hash-based (`#beta`), so deep links and refreshes always resolve without server rewrites.
-
-## Tests
+**Run the tests:**
 
 ```bash
-npm install          # first time only
-npm test             # numeric checks on the distribution modules (Node)
-npm run test:smoke   # Playwright DOM smoke tests (needs: npx playwright install chromium)
+npm install
+npm test             # numeric checks on every distribution module
+npm run test:smoke   # Playwright tests for rendering and routing
 ```
 
-The Node tests verify, purely from each module's own functions, that the density integrates to ~1 over its support and that the numerical mean and variance match the closed-form `stats()`. The smoke tests verify rendering, hash routing, and live curve redraw.
+**Add a distribution:** create a module in `js/distributions/` exporting a single object (`pdf`/`pmf`, `xRange`, `stats`, `prior`, `likelihood`, `conjugate`, `examples`, `related`), then add it to `js/registry.js`. The sidebar, home grid, routing, and related-chip filtering all derive from that list. `pdf`/`pmf`, `xRange`, and `stats` are pure functions so they can be tested headlessly.
 
-## Adding a distribution
+**Deploy:** push to `main`; GitHub Pages serves the repository root (a `.nojekyll` file is included).
 
-Each distribution is one self-contained ES module in `js/distributions/`, exporting a single object. Add the import and an entry to `js/registry.js`; the sidebar, home grid, routing, and related-chip filtering all derive from that list.
-
-```js
-export const example = {
-  id:        'example',          // unique slug, used in the URL hash
-  name:      'Example',
-  family:    'Continuous — positive',
-  notation:  'X ~ Example(θ)',
-  color:     '#9ecf98',          // chalk accent for this distribution
-  type:      'continuous',       // 'continuous' | 'discrete' | 'multivariate'
-  tagline:   'One sentence on what this distribution is fundamentally for.',
-  params: [
-    { id: 'theta', label: 'θ', name: 'rate (θ)', min: 0.1, max: 10, step: 0.1, init: 1,
-      desc: 'One-line description shown under the slider.' },
-  ],
-  pdf:    (x, p) => /* density or mass at x */ 0,
-  xRange: (p) => [lo, hi],       // plotting range
-  stats:  (p) => ({ mean, mode, variance, support }),  // numbers + a support string
-  statForms: { mean: 'θ', mode: '…', variance: '…' },  // optional formula labels
-  prior:      { title: '…', body: ['point', 'point'], tips: ['…'] },  // body: string or string[]
-  likelihood: { title: '…', body: ['point', 'point'], tips: ['…'] },
-  conjugate:  { prior: '…', likelihood: '…', posterior: '…', formula: '…', note: '…' },
-  examples:   ['concrete example with numbers', '…'],
-  related:    ['gamma', 'poisson'],   // ids; unbuilt ones are hidden automatically
-};
-```
-
-`pdf`, `xRange`, and `stats` are pure functions so they can be tested headlessly. `body` may be a string (paragraph) or an array of strings (point form). Use `feTurbulence`-filtered chalk styling for any custom visuals so they match the board.
-
-## Design
-
-Deep slate chalkboard, off-white chalk text, and per-distribution accent colours. Playfair Display for titles, Lora for readable body prose, Caveat for handwritten chalk labels and annotations, JetBrains Mono for all mathematics. Curves are SVG paths with a chalk displacement filter, not a charting library.
+</details>
