@@ -34,3 +34,8 @@ export function lgamma(x) {
 export function betaln(a, b) {
   return lgamma(a) + lgamma(b) - lgamma(a + b);
 }
+
+// Log of the binomial coefficient C(n, k), via log-gamma (works for real n).
+export function logChoose(n, k) {
+  return lgamma(n + 1) - lgamma(k + 1) - lgamma(n - k + 1);
+}
