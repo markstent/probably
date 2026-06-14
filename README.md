@@ -24,6 +24,8 @@
 
 It is designed for students, data scientists, and anyone building Bayesian models who wants to build intuition rather than dig through scattered textbook pages and inconsistent notation. No sign-up, no installation, nothing to download. Just open the link.
 
+Above all it is meant to be a **reference point for Bayesian modelling**: a quick place to refresh your memory when you are mid-model and need to recall which prior to reach for, what a parameter controls, or how a conjugate update works, without breaking your flow.
+
 ## What you get for each distribution
 
 - **Notation and a plain-language tagline** so you know immediately what it is for.
