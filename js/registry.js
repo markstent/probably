@@ -23,9 +23,9 @@ export const BY_ID = new Map(DISTRIBUTIONS.map((d) => [d.id, d]));
 
 // Families in display order. A family only appears if it has a built member.
 export const FAMILY_ORDER = [
-  'Continuous — bounded',
-  'Continuous — positive',
-  'Continuous — real line',
+  'Continuous · bounded',
+  'Continuous · positive',
+  'Continuous · real line',
   'Discrete',
   'Multivariate',
 ];

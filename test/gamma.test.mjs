@@ -6,7 +6,7 @@ const close = (a, b, t = 1e-9) => assert.ok(Math.abs(a - b) < t, `${a} vs ${b}`)
 
 test('gamma shape + integration + moments', () => {
   assert.equal(gamma.id, 'gamma');
-  assert.equal(gamma.family, 'Continuous — positive');
+  assert.equal(gamma.family, 'Continuous · positive');
   for (const [a, b] of [[3, 1], [2, 2], [5, 1.5], [1, 1]]) checkContinuous(gamma, { a, b }, { range: [0, 60] });
 });
 test('gamma closed-form stats', () => {

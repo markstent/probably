@@ -1,11 +1,11 @@
 import { betaln } from '../mathx.js';
 
-// Beta — the distribution of a probability. Conjugate prior for Bernoulli and
+// Beta - the distribution of a probability. Conjugate prior for Bernoulli and
 // Binomial. This module is the template every other distribution follows.
 export const beta = {
   id: 'beta',
   name: 'Beta',
-  family: 'Continuous — bounded',
+  family: 'Continuous · bounded',
   notation: 'X ~ Beta(α, β)',
   color: '#f5c87a',
   type: 'continuous',

@@ -1,6 +1,6 @@
 import { logChoose } from '../mathx.js';
 
-// Binomial (trials n, success probability p) — successes in a fixed number of trials.
+// Binomial (trials n, success probability p) - successes in a fixed number of trials.
 export const binomial = {
   id: 'binomial',
   name: 'Binomial',

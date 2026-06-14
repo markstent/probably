@@ -1,4 +1,4 @@
-// Bernoulli (success probability p) — a single yes/no trial. Binomial(1, p).
+// Bernoulli (success probability p) - a single yes/no trial. Binomial(1, p).
 export const bernoulli = {
   id: 'bernoulli',
   name: 'Bernoulli',

@@ -1,8 +1,8 @@
-// Exponential (rate λ) — the memoryless waiting time, and Gamma(1, λ).
+// Exponential (rate λ) - the memoryless waiting time, and Gamma(1, λ).
 export const exponential = {
   id: 'exponential',
   name: 'Exponential',
-  family: 'Continuous — positive',
+  family: 'Continuous · positive',
   notation: 'X ~ Exponential(λ)',
   color: '#d4937a',
   type: 'continuous',

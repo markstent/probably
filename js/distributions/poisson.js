@@ -1,6 +1,6 @@
 import { lgamma } from '../mathx.js';
 
-// Poisson (rate λ) — counts of independent events in a fixed exposure.
+// Poisson (rate λ) - counts of independent events in a fixed exposure.
 export const poisson = {
   id: 'poisson',
   name: 'Poisson',

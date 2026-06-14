@@ -1,11 +1,11 @@
 import { lgamma } from '../mathx.js';
 
-// Gamma (shape α, rate β) — the standard prior for rates and precisions, and a
+// Gamma (shape α, rate β) - the standard prior for rates and precisions, and a
 // flexible likelihood for positive right-skewed data.
 export const gamma = {
   id: 'gamma',
   name: 'Gamma',
-  family: 'Continuous — positive',
+  family: 'Continuous · positive',
   notation: 'X ~ Gamma(α, β)',
   color: '#9ecf98',
   type: 'continuous',

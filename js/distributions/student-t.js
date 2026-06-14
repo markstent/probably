@@ -1,12 +1,12 @@
 import { lgamma } from '../mathx.js';
 
-// Student-t (degrees of freedom ν, location μ, scale σ) — the robust, heavy-tailed
+// Student-t (degrees of freedom ν, location μ, scale σ) - the robust, heavy-tailed
 // cousin of the Normal. This module also introduces the "requires MCMC" path:
 // no closed-form conjugate update exists.
 export const studentT = {
   id: 'student-t',
   name: 'Student-t',
-  family: 'Continuous — real line',
+  family: 'Continuous · real line',
   notation: 'X ~ Student-t(ν, μ, σ)',
   color: '#84c0b8',
   type: 'continuous',

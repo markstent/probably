@@ -1,6 +1,6 @@
 import { logChoose } from '../mathx.js';
 
-// Negative Binomial (successes r, success probability p) — counts of failures
+// Negative Binomial (successes r, success probability p) - counts of failures
 // before the r-th success, and the overdispersed alternative to the Poisson.
 export const negativeBinomial = {
   id: 'negative-binomial',

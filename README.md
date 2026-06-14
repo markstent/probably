@@ -14,7 +14,7 @@
 
 ### → [**markstent.github.io/probably**](https://markstent.github.io/probably/) ←
 
-![Probably — the Gamma distribution board](docs/preview.png)
+![Probably: the Gamma distribution board](docs/preview.png)
 
 </div>
 
@@ -28,9 +28,9 @@ It is designed for students, data scientists, and anyone building Bayesian model
 
 - **Notation and a plain-language tagline** so you know immediately what it is for.
 - **An interactive curve.** Drag the parameter sliders and watch the density redraw live, so you can feel how each parameter changes the shape. Discrete distributions are drawn as bar charts; the Dirichlet is drawn on its simplex.
-- **Live summary statistics** — mean, mode, variance, and support — updating as you move the sliders.
+- **Live summary statistics** (mean, mode, variance, and support) that update as you move the sliders.
 - **"As a prior" and "as a likelihood" guidance** in point form: when to reach for it, what the parameters mean in practice, how to choose them, and the common pitfalls. Where a distribution is not really used in one of those roles, it says so honestly and tells you what to use instead.
-- **The conjugate update written out in full** — prior × likelihood → posterior — with the equations and a plain-English explanation of what the update is doing. Where there is no tidy update, it explains which sampler to use and why.
+- **The conjugate update written out in full** (prior × likelihood → posterior), with the equations and a plain-English explanation of what the update is doing. Where there is no tidy update, it explains which sampler to use and why.
 - **Concrete worked examples** with real domains and numbers.
 - **Links to related distributions** so you can explore the family.
 
@@ -38,9 +38,9 @@ It is designed for students, data scientists, and anyone building Bayesian model
 
 | Family | Distributions |
 | --- | --- |
-| Continuous — bounded | Beta |
-| Continuous — positive | Gamma, Inverse-Gamma, Exponential |
-| Continuous — real line | Normal, Student-t |
+| Continuous · bounded | Beta |
+| Continuous · positive | Gamma, Inverse-Gamma, Exponential |
+| Continuous · real line | Normal, Student-t |
 | Discrete | Bernoulli, Binomial, Poisson, Negative Binomial |
 | Multivariate | Dirichlet |
 

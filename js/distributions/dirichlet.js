@@ -1,6 +1,6 @@
 import { lgamma } from '../mathx.js';
 
-// Dirichlet (concentrations α₁…α_K) — the distribution over a probability vector
+// Dirichlet (concentrations α₁…α_K) - the distribution over a probability vector
 // on the simplex. The multivariate generalisation of the Beta and the conjugate
 // prior for Categorical and Multinomial counts. Shown here for K = 3 on a
 // 2-simplex. density()/meanVector() are pure helpers used by the test and the
@@ -43,7 +43,7 @@ export const dirichlet = {
     const allAbove1 = a1 > 1 && a2 > 1 && a3 > 1;
     return {
       mean: `(${t([a1 / A, a2 / A, a3 / A])})`,
-      mode: allAbove1 ? `(${t([(a1 - 1) / (A - 3), (a2 - 1) / (A - 3), (a3 - 1) / (A - 3)])})` : '—',
+      mode: allAbove1 ? `(${t([(a1 - 1) / (A - 3), (a2 - 1) / (A - 3), (a3 - 1) / (A - 3)])})` : 'n/a',
       variance: (a1 * (A - a1)) / (A * A * (A + 1)),
       support: 'simplex Δ²',
     };

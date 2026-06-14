@@ -7,7 +7,7 @@ const close = (a, b, tol = 1e-9) => assert.ok(Math.abs(a - b) < tol, `${a} not w
 const P = (a, b) => ({ a, b });
 
 test('beta module has the required data-structure shape', () => {
-  assert.equal(beta.family, 'Continuous — bounded');
+  assert.equal(beta.family, 'Continuous · bounded');
   assert.match(beta.notation, /Beta/);
   assert.equal(typeof beta.pdf, 'function');
   assert.equal(typeof beta.stats, 'function');

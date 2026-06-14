@@ -1,10 +1,10 @@
 import { lgamma } from '../mathx.js';
 
-// Inverse-Gamma (shape α, scale β) — the conjugate prior for a Normal variance.
+// Inverse-Gamma (shape α, scale β) - the conjugate prior for a Normal variance.
 export const inverseGamma = {
   id: 'inverse-gamma',
   name: 'Inverse-Gamma',
-  family: 'Continuous — positive',
+  family: 'Continuous · positive',
   notation: 'X ~ Inv-Gamma(α, β)',
   color: '#c3b0e8',
   type: 'continuous',

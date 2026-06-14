@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Probably — a bayesian reference</title>
+<title>Probably · a bayesian reference</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231d2b23'/%3E%3Ctext x='16' y='24' font-family='Georgia,serif' font-style='italic' font-size='23' fill='%239ecf98' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
 <meta name="description" content="Probably: an interactive chalkboard reference for statistical distributions and Bayesian inference. Notation, live curves, prior and likelihood guidance, conjugate updates, and worked examples.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -71,6 +71,12 @@ body::before{
 .hero-eq .eq-prior{color:var(--prior);}
 .home-rule{height:1px;background:var(--line);margin:0 0 22px;position:relative;}
 .home-rule::after{content:'';position:absolute;left:0;top:0;width:120px;height:1px;background:#9ecf98;opacity:0.4;}
+.chooser{margin-bottom:26px;}
+.chooser-lbl{font-family:'Caveat',cursive;font-size:17px;color:rgba(240,235,224,0.42);margin-bottom:11px;}
+.chooser-row{display:flex;flex-wrap:wrap;gap:8px;}
+.chooser-btn{font-family:'Caveat',cursive;font-size:17px;color:rgba(240,235,224,0.62);background:rgba(0,0,0,0.14);border:1px solid rgba(245,240,232,0.16);border-radius:20px;padding:4px 15px;cursor:pointer;transition:color .15s,background .15s,border-color .15s;}
+.chooser-btn:hover{color:#9ecf98;border-color:rgba(158,207,152,0.5);}
+.chooser-btn.on{color:#1d2b23;background:#9ecf98;border-color:#9ecf98;}
 .home-search{width:100%;max-width:360px;background:transparent;border:none;border-bottom:1px solid rgba(245,240,232,0.2);color:var(--chalk);font-family:'Caveat',cursive;font-size:20px;padding:4px 2px;outline:none;margin-bottom:30px;display:block;}
 .home-search::placeholder{color:rgba(240,235,224,0.3);}
 .home-search:focus{border-bottom-color:#9ecf98;}

@@ -15,7 +15,7 @@ let current = null; // { dist, params }
 // ---------- formatting ----------
 function fmt(v) {
   if (typeof v === 'string') return v;
-  if (v === null || v === undefined || Number.isNaN(v)) return '—';
+  if (v === null || v === undefined || Number.isNaN(v)) return 'n/a';
   if (!Number.isFinite(v)) return '∞';
   if (Math.abs(v) >= 1000 || (v !== 0 && Math.abs(v) < 0.001)) return v.toExponential(2);
   return (Math.round(v * 1000) / 1000).toString();
@@ -429,36 +429,66 @@ function renderHome(main, navigate) {
     const section = el('div', { class: 'gsection', 'data-family': family });
     section.append(el('div', { class: 'gfam', text: family }));
     const grid = el('div', { class: 'gallery' });
-    for (const dimport of members) {
+    for (const d of members) {
       const card = el('button', {
-        class: 'gcard', 'aria-label': dimport.name, 'data-id': dimport.id, 'data-name': dimport.name.toLowerCase(), 'data-fam': family.toLowerCase(),
-        style: `--accent:${dimport.color}`, onclick: () => navigate(dimport.id),
+        class: 'gcard', 'aria-label': d.name, 'data-id': d.id, 'data-name': d.name.toLowerCase(), 'data-fam': family.toLowerCase(),
+        style: `--accent:${d.color}`, onclick: () => navigate(d.id),
       },
-        el('div', { class: 'thumb-box' }, buildThumb(dimport)),
-        el('div', { class: 'gname', text: dimport.name }),
-        el('div', { class: 'gnote', text: dimport.notation }));
-      grid.append(card); cards.push({ card, section });
+        el('div', { class: 'thumb-box' }, buildThumb(d)),
+        el('div', { class: 'gname', text: d.name }),
+        el('div', { class: 'gnote', text: d.notation }));
+      grid.append(card); cards.push(card);
     }
     section.append(grid);
     galleryWrap.append(section);
   }
 
-  search.addEventListener('input', () => {
-    const q = search.value.trim().toLowerCase();
-    for (const { card } of cards) {
-      const hit = !q || card.dataset.name.includes(q) || card.dataset.fam.includes(q);
-      card.style.display = hit ? '' : 'none';
-    }
+  const applyFilter = (pred) => {
+    for (const card of cards) card.style.display = pred(card) ? '' : 'none';
     galleryWrap.querySelectorAll('.gsection').forEach((s) => {
       const any = [...s.querySelectorAll('.gcard')].some((c) => c.style.display !== 'none');
       s.style.display = any ? '' : 'none';
     });
+  };
+
+  // find-by-data chooser: pick the kind of quantity, filter the gallery to it.
+  const CHOOSER = [
+    { label: 'a probability (0 to 1)', ids: ['beta'] },
+    { label: 'a positive amount', ids: ['gamma', 'inverse-gamma', 'exponential'] },
+    { label: 'a real number', ids: ['normal', 'student-t'] },
+    { label: 'yes / no, or successes in trials', ids: ['bernoulli', 'binomial'] },
+    { label: 'counts of events', ids: ['poisson', 'negative-binomial'] },
+    { label: 'several proportions (sum to 1)', ids: ['dirichlet'] },
+  ];
+  const chooserBtns = [];
+  const clearChooser = () => chooserBtns.forEach((b) => b.classList.remove('on'));
+  const chooserRow = el('div', { class: 'chooser-row' });
+  for (const opt of CHOOSER) {
+    const set = new Set(opt.ids.filter((id) => BY_ID.has(id)));
+    if (!set.size) continue;
+    const btn = el('button', { class: 'chooser-btn', text: opt.label, onclick: () => {
+      const wasOn = btn.classList.contains('on');
+      clearChooser();
+      search.value = '';
+      if (wasOn) { applyFilter(() => true); }
+      else { btn.classList.add('on'); applyFilter((c) => set.has(c.dataset.id)); galleryWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    } });
+    chooserRow.append(btn); chooserBtns.push(btn);
+  }
+  const chooser = el('div', { class: 'chooser' },
+    el('div', { class: 'chooser-lbl', text: 'not sure where to start? pick what your quantity looks like' }),
+    chooserRow);
+
+  search.addEventListener('input', () => {
+    clearChooser();
+    const q = search.value.trim().toLowerCase();
+    applyFilter((c) => !q || c.dataset.name.includes(q) || c.dataset.fam.includes(q));
   });
   search.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { const first = cards.find(({ card }) => card.style.display !== 'none'); if (first) navigate(first.card.dataset.id); }
+    if (e.key === 'Enter') { const first = cards.find((c) => c.style.display !== 'none'); if (first) navigate(first.dataset.id); }
   });
 
-  main.replaceChildren(el('div', { class: 'home' }, hero, el('div', { class: 'home-rule' }), search, galleryWrap));
+  main.replaceChildren(el('div', { class: 'home' }, hero, el('div', { class: 'home-rule' }), chooser, search, galleryWrap));
 }
 
 // ---------- sidebar ----------

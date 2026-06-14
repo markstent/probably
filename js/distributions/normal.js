@@ -1,8 +1,8 @@
-// Normal (mean μ, standard deviation σ) — the default for an unbounded quantity.
+// Normal (mean μ, standard deviation σ) - the default for an unbounded quantity.
 export const normal = {
   id: 'normal',
   name: 'Normal',
-  family: 'Continuous — real line',
+  family: 'Continuous · real line',
   notation: 'X ~ Normal(μ, σ)',
   color: '#8ab4d4',
   type: 'continuous',

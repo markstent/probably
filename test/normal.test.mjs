@@ -6,7 +6,7 @@ const close = (a, b, t = 1e-9) => assert.ok(Math.abs(a - b) < t, `${a} vs ${b}`)
 
 test('normal shape + integration + moments', () => {
   assert.equal(normal.id, 'normal');
-  assert.equal(normal.family, 'Continuous — real line');
+  assert.equal(normal.family, 'Continuous · real line');
   for (const [mu, sigma] of [[0, 1], [2, 0.5], [-1, 2]]) checkContinuous(normal, { mu, sigma });
 });
 test('normal pdf peak and stats', () => {
