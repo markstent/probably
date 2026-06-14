@@ -356,26 +356,109 @@ function renderBoard(main, dist, navigate) {
   redrawStats(board, dist, params);
 }
 
+// ---------- home thumbnails ----------
+// A compact, label-free silhouette of each distribution for the gallery cards.
+function buildThumb(dist) {
+  const params = Object.fromEntries(dist.params.map((p) => [p.id, p.init]));
+  const W = 168, H = 84, pl = 6, pr = 6, pt = 10, pb = 8;
+  const pw = W - pl - pr, ph = H - pt - pb, baseY = pt + ph;
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: '100%', class: 'thumb' });
+
+  if (dist.type === 'multivariate') {
+    const V1 = [W / 2, pt], V2 = [pl + 12, baseY], V3 = [W - pr - 12, baseY];
+    svg.append(el('path', { class: 'simplex-edge', d: `M${V1[0]},${V1[1]} L${V2[0]},${V2[1]} L${V3[0]},${V3[1]} Z` }));
+    const N = 22; let dmax = 0; const pts = [];
+    for (let i = 1; i < N; i++) for (let j = 1; j < N - i; j++) {
+      const x1 = i / N, x2 = j / N, x3 = 1 - x1 - x2; if (x3 <= 0) continue;
+      const d = dist.density([x1, x2, x3], params); if (Number.isFinite(d)) { pts.push([x1, x2, x3, d]); if (d > dmax) dmax = d; }
+    }
+    dmax = dmax || 1;
+    const g = el('g', { filter: 'url(#chalk)' });
+    for (const [x1, x2, x3, d] of pts) {
+      const o = Math.min(1, d / dmax); if (o < 0.04) continue;
+      g.append(el('circle', { cx: (x1 * V1[0] + x2 * V2[0] + x3 * V3[0]).toFixed(1), cy: (x1 * V1[1] + x2 * V2[1] + x3 * V3[1]).toFixed(1), r: 1.8, fill: dist.color, 'fill-opacity': (0.12 + 0.85 * o).toFixed(2), stroke: 'none' }));
+    }
+    svg.append(g);
+    return svg;
+  }
+
+  if (dist.type === 'discrete') {
+    const [kmin, kmax] = dist.xRange(params); const n = kmax - kmin + 1;
+    let ymax = 0; const ps = [];
+    for (let k = kmin; k <= kmax; k++) { const v = dist.pmf(k, params); ps.push(Number.isFinite(v) ? v : 0); if (ps[ps.length - 1] > ymax) ymax = ps[ps.length - 1]; }
+    ymax = ymax || 1; const slot = pw / n; const barW = Math.max(1.4, slot * 0.62);
+    const g = el('g', { filter: 'url(#chalk)' });
+    for (let i = 0; i < n; i++) { const h = (ps[i] / ymax) * ph * 0.92; const cx = pl + (i + 0.5) * slot; g.append(el('rect', { x: cx - barW / 2, y: baseY - h, width: barW, height: h, class: 'bar', fill: dist.color, stroke: dist.color })); }
+    svg.append(g);
+    return svg;
+  }
+
+  const c = sampleCurve(dist, params, 90);
+  const map = (x, y) => [pl + ((x - c.lo) / (c.hi - c.lo)) * pw, pt + ph - (y / c.ymax) * ph * 0.92];
+  let d = '';
+  for (let i = 0; i < c.xs.length; i++) { const [px, py] = map(c.xs[i], c.ys[i]); d += (i ? 'L' : 'M') + px.toFixed(1) + ',' + py.toFixed(1) + ' '; }
+  const x0 = map(c.lo, 0)[0], xN = map(c.hi, 0)[0];
+  svg.append(
+    el('path', { class: 'curve-fill', d: `M${x0.toFixed(1)},${baseY} ${d.slice(1)}L${xN.toFixed(1)},${baseY} Z` }),
+    el('path', { class: 'thumb-stroke', filter: 'url(#chalk)', d: d.trim(), stroke: dist.color }),
+  );
+  return svg;
+}
+
 // ---------- home ----------
 function renderHome(main, navigate) {
   current = null;
   main.style.removeProperty('--accent');
-  const grid = el('div', { class: 'fgrid' });
-  for (const { family, members } of byFamily()) {
-    const chips = el('div', { class: 'chips' });
-    for (const d of members) {
-      chips.append(el('button', { class: 'ch', text: d.name, onclick: () => navigate(d.id) }));
-    }
-    grid.append(el('div', { class: 'fb' }, el('div', { class: 'fn', text: family }), chips));
-  }
-  const home = el('div', { class: 'home' },
+
+  const hero = el('div', { class: 'home-hero' },
     el('div', { class: 'h1' }, el('em', { text: 'Probably' })),
-    el('div', { class: 'byline', text: 'a chalkboard reference for bayesian practitioners' }),
-    el('div', { class: 'rule' }),
-    grid,
-    el('div', { class: 'footer-note',
-      text: 'select any distribution to see: notation / interactive curve / parameter controls / prior use / likelihood use / conjugate update / worked examples' }));
-  main.replaceChildren(home);
+    el('div', { class: 'hero-tag', text: 'An interactive chalkboard reference for the probability distributions behind Bayesian inference. Pick one to see its shape, when to use it as a prior or a likelihood, and how it updates when it meets data.' }),
+    el('div', { class: 'hero-eq' },
+      el('span', { class: 'eq-post', text: 'posterior' }),
+      el('span', { class: 'eq-op', text: ' ∝ ' }),
+      el('span', { class: 'eq-like', text: 'likelihood' }),
+      el('span', { class: 'eq-op', text: ' × ' }),
+      el('span', { class: 'eq-prior', text: 'prior' })),
+  );
+
+  const search = el('input', { type: 'search', class: 'home-search', placeholder: 'search distributions…', 'aria-label': 'search distributions' });
+
+  const galleryWrap = el('div', { class: 'gallery-wrap' });
+  const cards = [];
+  for (const { family, members } of byFamily()) {
+    const section = el('div', { class: 'gsection', 'data-family': family });
+    section.append(el('div', { class: 'gfam', text: family }));
+    const grid = el('div', { class: 'gallery' });
+    for (const dimport of members) {
+      const card = el('button', {
+        class: 'gcard', 'aria-label': dimport.name, 'data-id': dimport.id, 'data-name': dimport.name.toLowerCase(), 'data-fam': family.toLowerCase(),
+        style: `--accent:${dimport.color}`, onclick: () => navigate(dimport.id),
+      },
+        el('div', { class: 'thumb-box' }, buildThumb(dimport)),
+        el('div', { class: 'gname', text: dimport.name }),
+        el('div', { class: 'gnote', text: dimport.notation }));
+      grid.append(card); cards.push({ card, section });
+    }
+    section.append(grid);
+    galleryWrap.append(section);
+  }
+
+  search.addEventListener('input', () => {
+    const q = search.value.trim().toLowerCase();
+    for (const { card } of cards) {
+      const hit = !q || card.dataset.name.includes(q) || card.dataset.fam.includes(q);
+      card.style.display = hit ? '' : 'none';
+    }
+    galleryWrap.querySelectorAll('.gsection').forEach((s) => {
+      const any = [...s.querySelectorAll('.gcard')].some((c) => c.style.display !== 'none');
+      s.style.display = any ? '' : 'none';
+    });
+  });
+  search.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { const first = cards.find(({ card }) => card.style.display !== 'none'); if (first) navigate(first.card.dataset.id); }
+  });
+
+  main.replaceChildren(el('div', { class: 'home' }, hero, el('div', { class: 'home-rule' }), search, galleryWrap));
 }
 
 // ---------- sidebar ----------
