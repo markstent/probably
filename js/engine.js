@@ -111,7 +111,7 @@ function buildCurveSvg(dist, params) {
       class: 'annot', fill: color, text: label,
     }));
   };
-  marker(stats.mode, 'mode', 'rgba(240,235,224,0.5)', 'left');
+  marker(stats.mode, 'mode', 'rgba(240,235,224,0.62)', 'left');
   marker(stats.mean, 'mean', dist.color, 'right');
 
   return svg;
@@ -195,7 +195,7 @@ function buildSimplexSvg(dist, params) {
   svg.append(group);
 
   const lab = (v, t, dx, dy, anchor) =>
-    svg.append(el('text', { x: v[0] + dx, y: v[1] + dy, 'text-anchor': anchor, class: 'annot', fill: 'rgba(240,235,224,0.42)', text: t }));
+    svg.append(el('text', { x: v[0] + dx, y: v[1] + dy, 'text-anchor': anchor, class: 'annot', fill: 'rgba(240,235,224,0.58)', text: t }));
   lab(V1, 'x₁', 0, -6, 'middle'); lab(V2, 'x₂', -6, 16, 'end'); lab(V3, 'x₃', 6, 16, 'start');
 
   const m = dist.meanVector(params);
